@@ -1,0 +1,3 @@
+[submodule "cpp-audio-clipping"]
+	path = cpp-audio-clipping
+	url = https://github.com/BrettStory/cpp-audio-clipping
