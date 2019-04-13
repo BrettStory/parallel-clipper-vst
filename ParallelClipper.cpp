@@ -10,7 +10,6 @@ ParallelClipper::ParallelClipper(IPlugInstanceInfo instanceInfo) : IPLUG_CTOR(NU
 	GetParam(THRESHOLD)->InitDouble("Threshold", 50, 1, 100, 0.1, "%");
 	GetParam(SOFT_PRE_GAIN)->InitDouble("Soft Pre Gain", 1, 0, 100, 0.1, "x");
 	GetParam(HARD_PRE_GAIN)->InitDouble("Hard Pre Gain", 1, 0, 100, 0.1, "x");
-	GetParam(POST_GAIN)->InitDouble("Post Gain", 100, 0, 200, 1, "%");
 
 #if IPLUG_EDITOR // All UI methods and member variables should be within an IPLUG_EDITOR guard, should you want distributed UI
 	mMakeGraphicsFunc = [&]() {
@@ -19,18 +18,18 @@ ParallelClipper::ParallelClipper(IPlugInstanceInfo instanceInfo) : IPLUG_CTOR(NU
 
 	mLayoutFunc = [&](IGraphics * pGraphics) {
 		pGraphics->AttachCornerResizer(kUIResizerScale, false);
-		pGraphics->AttachPanelBackground(COLOR_TRANSPARENT);
-		pGraphics->LoadFont(ROBOTTO_FN);
+		pGraphics->AttachPanelBackground(COLOR_MEDIUM);
+		pGraphics->LoadFont("Roboto-Regular", ROBOTTO_FN);
 
 		const IRECT bounds = pGraphics->GetBounds();
-		const IRECT softGrid = bounds.GetGridCell(0, 1, 3);
+		const IRECT softGrid = bounds.GetGridCell(0, 1, 2);
 
-		pGraphics->FillRect(COLOR_LIGHT, softGrid, new IBlend());
+		pGraphics->FillRect(COLOR_MEDIUM, softGrid, new IBlend());
 
 		pGraphics->AttachControl(new ITextControl(
 			softGrid.GetGridCell(1, 24, 1).GetCentredInside(96),
 			"SOFT",
-			IText(24, COLOR_FONT_PRIMARY, "Roboto-Regular", IText::kStyleBold)));
+			IText(24, COLOR_FONT_PRIMARY, "Roboto-Regular")));
 
 		pGraphics->AttachControl(new IVKnobControl(
 			softGrid.GetGridCell(8, 24, 1).GetCentredInside(96),
@@ -39,7 +38,7 @@ ParallelClipper::ParallelClipper(IPlugInstanceInfo instanceInfo) : IPLUG_CTOR(NU
 			true,
 			DEFAULT_SPEC,
 			IText(16, COLOR_FONT_SECONDARY),
-			IText(10, COLOR_FONT_SECONDARY)));
+			IText(10, COLOR_DARKEST)));
 
 		pGraphics->AttachControl(new IVKnobControl(
 			softGrid.GetGridCell(9, 12, 1).GetCentredInside(96),
@@ -48,15 +47,15 @@ ParallelClipper::ParallelClipper(IPlugInstanceInfo instanceInfo) : IPLUG_CTOR(NU
 			true,
 			DEFAULT_SPEC,
 			IText(16, COLOR_FONT_SECONDARY),
-			IText(10, COLOR_FONT_SECONDARY)));
+			IText(10, COLOR_DARKEST)));
 
-		const IRECT hardGrid = bounds.GetGridCell(1, 1, 3);
-		pGraphics->FillRect(COLOR_MEDIUM, hardGrid, new IBlend());
+		const IRECT hardGrid = bounds.GetGridCell(1, 1, 2);
+		pGraphics->FillRect(COLOR_DARK, hardGrid, new IBlend());
 
 		pGraphics->AttachControl(new ITextControl(
 			hardGrid.GetGridCell(1, 24, 1).GetCentredInside(96),
 			"HARD",
-			IText(24, COLOR_FONT_PRIMARY, "Roboto-Regular", IText::kStyleBold)));
+			IText(24, COLOR_FONT_PRIMARY, "Roboto-Regular")));
 
 		pGraphics->AttachControl(new IVKnobControl(
 			hardGrid.GetGridCell(8, 24, 1).GetCentredInside(96),
@@ -65,7 +64,7 @@ ParallelClipper::ParallelClipper(IPlugInstanceInfo instanceInfo) : IPLUG_CTOR(NU
 			true,
 			DEFAULT_SPEC,
 			IText(16, COLOR_FONT_SECONDARY),
-			IText(10, COLOR_FONT_SECONDARY)));
+			IText(10, COLOR_DARKEST)));
 
 		pGraphics->AttachControl(new IVKnobControl(
 			hardGrid.GetGridCell(9, 12, 1).GetCentredInside(96),
@@ -74,23 +73,7 @@ ParallelClipper::ParallelClipper(IPlugInstanceInfo instanceInfo) : IPLUG_CTOR(NU
 			true,
 			DEFAULT_SPEC,
 			IText(16, COLOR_FONT_SECONDARY),
-			IText(10, COLOR_FONT_SECONDARY)));
-
-		const IRECT outGrid = bounds.GetGridCell(2, 1, 3);
-		pGraphics->FillRect(COLOR_DARK, outGrid, new IBlend());
-		pGraphics->AttachControl(new ITextControl(
-			outGrid.GetGridCell(1, 24, 1).GetCentredInside(96),
-			"OUT",
-			IText(24, COLOR_FONT_PRIMARY, "Roboto-Regular", IText::kStyleBold)));
-
-		pGraphics->AttachControl(new IVKnobControl(
-			outGrid.GetGridCell(8, 24, 1).GetCentredInside(96),
-			POST_GAIN,
-			"POST-GAIN",
-			true,
-			DEFAULT_SPEC,
-			IText(16, COLOR_FONT_SECONDARY),
-			IText(10, COLOR_FONT_SECONDARY)));
+			IText(10, COLOR_DARKEST)));
 	};
 #endif
 }
@@ -101,7 +84,6 @@ void ParallelClipper::ProcessBlock(sample** inputs, sample** outputs, int nFrame
 	const double thresholdValue = GetParam(THRESHOLD)->Value() * 0.01;
 	const double softPreGainValue = GetParam(SOFT_PRE_GAIN)->Value();
 	const double softnessValue = GetParam(SOFTNESS)->Value() * 0.01;
-	const double postGainValue = GetParam(POST_GAIN)->Value() * 0.01;
 	const int numberOfChannels = NOutChansConnected();
 
 	for (int i = 0; i < numberOfChannels; i++) {
@@ -112,7 +94,7 @@ void ParallelClipper::ProcessBlock(sample** inputs, sample** outputs, int nFrame
 			double hard_output = clipping::HardClip::ClipSample(*input * hardPreGainValue, thresholdValue);
 			double soft_output = clipping::SoftClipArctan::ClipSample(*input * softPreGainValue);
 			double mixed_output = ((soft_output * softnessValue) + (hard_output * (1 - softnessValue)));
-			*output = fmin(1, mixed_output * postGainValue);
+			*output = fmin(1, mixed_output);
 		}
 	}
 }

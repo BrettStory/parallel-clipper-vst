@@ -15,7 +15,6 @@ enum EParams {
 	THRESHOLD = 1,
 	SOFT_PRE_GAIN = 2,
 	HARD_PRE_GAIN = 3,
-	POST_GAIN = 4,
 	NUMBER_OF_PARAMETERS
 };
 

@@ -125,6 +125,7 @@
     <ClCompile Include="..\..\..\IPlug\VST3\IPlugVST3_ProcessorBase.cpp">
       <Filter>IPlug\VST3</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\Dependencies\IPlug\VST3_SDK\public.sdk\source\common\commoniids.cpp" />
     <ClCompile Include="..\audio-clipping\HardClip.cpp">
       <Filter>audio-clipping</Filter>
     </ClCompile>
@@ -426,7 +427,7 @@
       <UniqueIdentifier>{5f06b03e-5093-46c0-9513-efb4e494c857}</UniqueIdentifier>
     </Filter>
     <Filter Include="audio-clipping">
-      <UniqueIdentifier>{569b5aed-c167-49b0-aeca-1403e70c517b}</UniqueIdentifier>
+      <UniqueIdentifier>{07dc59b0-4605-49a5-a618-d89272f1ad00}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
