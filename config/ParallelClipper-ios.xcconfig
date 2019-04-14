@@ -4,7 +4,7 @@
 // Global build settings
 
 // the basename of the vst, vst3, app, component, aaxplugin
-BINARY_NAME = ParallelClipper
+BINARY_NAME = BrettStoryParallelClipper
 
 // ------------------------------
 // HEADER AND LIBRARY SEARCH PATHS

@@ -1,4 +1,4 @@
 
 [submodule "audio-clipping"]
 	path = audio-clipping
-	url = https://github.com/BrettStory/cpp-audio-clipping
+	url = https://github.com/BrettStory/audio-clipping

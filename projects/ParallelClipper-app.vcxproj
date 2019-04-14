@@ -177,6 +177,9 @@
     <ResourceCompile>
       <Culture />
     </ResourceCompile>
+    <PostBuildEvent>
+      <Command>CALL "$(SolutionDir)scripts\postbuild-win.bat" "$(TargetExt)" "$(BINARY_NAME)" "$(Platform)" "$(TargetPath)" "$(VST3_32_PATH)" "$(VST3_64_PATH)" "$(BUILD_DIR)" "$(VST_ICON)" "$(CREATE_BUNDLE_SCRIPT)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
